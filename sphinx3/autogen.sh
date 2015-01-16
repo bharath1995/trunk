@@ -1,4 +1,4 @@
-#!/bin/sh 
+#!/bin/sh
 # Run this to generate all the initial makefiles, etc.
 
 srcdir=`dirname $0`
@@ -88,7 +88,7 @@ do
 	$LIBTOOLIZE --force --copy
       fi
       echo "Running aclocal $aclocalinclude ..."
-      aclocal $aclocalinclude
+      aclocal -I m4 $aclocalinclude
       if grep "^AC_CONFIG_HEADER" configure.in >/dev/null; then
 	echo "Running autoheader..."
 	autoheader
