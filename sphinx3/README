@@ -65,8 +65,6 @@ main_live_pretend.c
 This directory contains the scripts and instructions necessary for
 decoding speech input using the CMU Sphinx Recognizer.
 
-This distribution is free software, see LICENSE for license.
-
 
 Installation Guide:
 ^^^^^^^^^^^^^^^^^^^
