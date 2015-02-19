@@ -65,12 +65,15 @@ use Getopt::Long;
 
 my ($word, $pron, $tok);
 my (%dict, %phone, %class);
+my %dicdup = ();
 my $haslowercase = 0;
 my $problems=0;
 
 my ($phonefile,$symbfile,$dictfile);
-GetOptions("phone=s" => \$phonefile, "dict=s"  => \$dictfile)
-    or die("usage: test_cmudict -p <phonefile> -d <dictfile>\n");
+GetOptions("phone=s" => \$phonefile, "dict=s"  => \$dictfile);
+if ( not defined $phonefile or not defined $dictfile ) {
+    die("usage: test_cmudict -p <phonefile> -d <dictfile>\n");
+}
 
 
 # get the legal symbol set (and class label)
@@ -103,7 +106,10 @@ while (<DICT>) {
     # examine the head term and the pronunciation
     ($word,$pron) = split (/\s+/,$line,2);
     $dict{$word}++;
-    if ( $word =~ /[a-z]/ ) { $haslowercase++; }
+    if ( $word =~ /[a-z]/ ) {
+	$haslowercase++;
+	if ( $haslowercase le 5 ) { print "WARN: $word has lower-case\n"; }
+    }
 
     # check tabbing (2 spaces)
     my @line = split (/  /,$line);
@@ -113,6 +119,7 @@ while (<DICT>) {
     }
 
     # check variant suffix
+    my $tok = "";
     # note that other than it being a digit, it only has to be unique
     if ( $word =~ /^[\(\)]/ ) {  # ignore 1st char if it's a paren
 	$tok = substr $word, 1;  # this isn't right...
@@ -123,29 +130,55 @@ while (<DICT>) {
 	}
     }
 
+    # check for duplicate variants
+    my ($root,$variant);
+    if ($tok =~ /\)$/) { # variant
+      ($root,$variant) = ($tok =~ m/(.+?)\((.+?)\)/);
+    } else {
+      $root = $word;
+      $variant = 0;
+    }
+    if ( defined $dicdup{$root}{$pron} ) {
+	print "ERROR: duplicate variants in $root($variant) $pron \n"; $problems++;
+    } else {
+	$dicdup{$root}{$pron} = 0;
+    }
+
     # check for legal phonetic symbols
     my @sym = split(/\s/,$pron);
     my @errs = ();
     my ($ph,$stress,$tail,$legalV);
     foreach my $s (@sym) {
+	if ( $s eq '' ) {
+	    print "ERROR: $word has a null phone! (extra space?)\n";
+	    next;
+	}
 	$ph = $stress = $tail = '';
 	($ph,$stress,$tail) = ($s =~ /([A-Z]+)([012]*)(.*)$/);
 	$|=1;
-	# print join( '|', ($s =~ /([A-Z]+)([012]*)(.*)$/)),"\n";
-	$legalV =  defined $phone{$ph} && $class{$ph} eq 'vowel' && $stress ne '' && $tail eq '';
+	#print join( '|', ($s =~ /([A-Z]+)([012]*)(.*)$/)),"\n";
+	
+	$legalV =  defined $phone{$ph} && ($class{$ph} eq 'vowel') && ($stress ne '') && ($tail eq '');
 	if ( not defined $phone{$ph} ) { push @errs, $s; }
 	elsif ( $legalV ) { $phone{$s}++; }  # doesn't do anything here, yet
 	else { $phone{$s}++; }  # could be a bare vowel...
 
-	if ( $tail ne '' ) { push @errs, $s; }
-	elsif ( (defined $class{$ph}) and ($class{$ph} eq 'vowel') and ($stress eq '') ){
-	    print "WARN: $word has a bare phone: $ph\n"; $problems++;
+	if ( $tail ne '' ) { push @errs, $s; }  # junk past the pron
+	elsif ( (defined $class{$ph}) and
+		($class{$ph} eq 'vowel') and ($stress eq '') ){
+	    print "ERROR: $word has a bare phone: $ph\n"; $problems++;
+	}
+	elsif  ( (defined $class{$ph}) and ($class{$ph} eq 'vowel') and
+		 (not (($stress =~ /[012]/) and (length($stress) eq 1)))
+	    ) {
+	    print "ERROR: $word has bad stress mark: '"."$ph $stress"."'\n"; $problems++;
 	}
 	elsif ( (defined $class{$ph}) and ($class{$ph} ne 'vowel') and ($stress ne '') ){
 	    push @errs, $s; }
     }
-    if (scalar @errs ne 0) { print "ERROR: $word has unknown phone(s): '".
-			   join(' ',@errs)."'\n"; $problems++; }
+    if (scalar @errs ne 0) {
+	print "ERROR: $word has unknown phone(s): '".join(' ',@errs)."'\n"; $problems++;
+    }
 
 
     # word order
@@ -169,15 +202,18 @@ foreach my $x (keys %dict) {
 }
 
 print "\nprocessed $word_cnt words\n";
-if ( $haslowercase ne 0 ) { print "$haslowercase entries have lower case"; }
-if ($problems eq 0) { print "no problems encountered!\n"; }
+if ( $haslowercase ne 0 ) { print "$haslowercase entries have lower case\n"; }
+if ($problems eq 0) { print "no errors encountered!\n"; }
 
 # print out the phone counts
 print "symbol occurence statistics:\n";
 $last = "";
+my $sum = 0; my $vow = 0;
 foreach (sort keys %phone) {
-    if ( substr($_,0,2) eq substr($last,0,2) ) { print "\t| "; } else { print "\n  "; }
-    print "$_\t$phone{$_}";
+    if ( substr($_,0,2) eq substr($last,0,2) ) { print "\t| "; $vow = 1;}
+    elsif ($vow) { print "\t= ",$sum,"\n"; $sum = 0; $vow = 0}
+    else { print "\n"; }
+    print "$_\t$phone{$_}"; if ($vow) { $sum += int($phone{$_}); }
     $last = $_;
 }
 print "\n";
