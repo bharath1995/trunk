@@ -437,7 +437,7 @@ write_stseg(char *dir, align_stseg_t * stseg, char *uttid, char *ctlspec)
         goto write_error;
 
     /* Write format "description" */
-    str = "\nCI.8 LC.8 RC.8 POS.3(HI)-ST.5(LO) SCR(32)\n";
+    str = "\nCI.16 LC.16 RC.16 POS.3(HI)-ST.5(LO) SCR(32)\n";
     if (fwrite(str, sizeof(char), strlen(str), fp) != strlen(str))
         goto write_error;
 
