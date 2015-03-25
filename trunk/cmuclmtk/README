@@ -1,8 +1,8 @@
-cmucmslmtk v3
--------------
+CMU Language Model toolkit cmucmslmtk v3
+----------------------------------------
 
 USE INSTRUCTIONS
-----------------
+==============================================================================
 If you simply want to use this tool you can download the executables
 located either in bin/x86-nt/ or in bin/x86-linux/. Note that both
 sets have been compiled for 32bit operation, meaning that vocabularies
@@ -18,7 +18,8 @@ not intend to actuvely support it.
 
 
 DEVELOPER INSTRUCTIONS
-----------------------
+==============================================================================
+
 The software is organized using the Gnu Autobuild environment, so you
 should be able to compile for other architectures or purposes. For
 example, if you need the old version of the tool, you need to
@@ -35,8 +36,3 @@ configure supports one tool-specific options:
 --enable-mingw 
 >> on Windows only, does a native compilation; otherwise you will be 
    compiling for cygwin only.
-
-
-
-----------------
-[20080429] (air)
