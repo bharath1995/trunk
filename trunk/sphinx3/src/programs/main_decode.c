@@ -186,14 +186,6 @@ main(int32 argc, char *argv[])
 
     kb_free(&kb);
 
-#if (! WIN32)
-#if defined(_SUN4)
-    system("ps -el | grep sphinx3_decode");
-#else
-    system("ps aguxwww | grep sphinx3_decode");
-#endif
-#endif
-
     cmd_ln_free_r(config);
     exit(0);
 }

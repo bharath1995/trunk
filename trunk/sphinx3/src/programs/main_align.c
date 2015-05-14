@@ -1052,10 +1052,6 @@ main(int32 argc, char *argv[])
     align_free();
     models_free();
 
-#if (! WIN32)
-    system("ps aguxwww | grep s3align");
-#endif
-
     cmd_ln_free_r(config);
     return 0;
 }
