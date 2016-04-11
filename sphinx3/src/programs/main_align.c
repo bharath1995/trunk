@@ -831,7 +831,7 @@ utt_align(void *data, utt_res_t * ur, int32 sf, int32 ef, char *uttid)
     /*  E_INFO("SENT %s\n",sent); */
     /* Strip utterance id from the end of the transcript */
     for (k = strlen(sent) - 1;
-         (k > 0) && ((sent[k] == '\n') || (sent[k] == '\t')
+         (k > 0) && ((sent[k] == '\n') || (sent[k] == '\t') || (sent[k] == '\r')
                      || (sent[k] == ' ')); --k);
     if ((k > 0) && (sent[k] == ')')) {
         for (--k; (k >= 0) && (sent[k] != '('); --k);
@@ -841,7 +841,7 @@ utt_align(void *data, utt_res_t * ur, int32 sf, int32 ef, char *uttid)
             /* Check that uttid in transcript and control file match */
             for (i = ++k;
                  sent[i] && (sent[i] != ')') &&
-                 (sent[i] != '\n') && (sent[i] != '\t')
+                 (sent[i] != '\n') && (sent[i] != '\t') && (sent[i] != '\r')
                  && (sent[i] != ' '); i++);
             sent[i] = '\0';
             if (id_cmp(sent + k, uttid) != 0)
