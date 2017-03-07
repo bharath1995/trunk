@@ -1,2 +1,0 @@
-include ':app', ':aars', ':models', ':wear'
-
