@@ -51,8 +51,6 @@ AC_DEFUN([CC_ATTRIBUTE_VISIBILITY], [
 	fi
 ])
 
-CC_ATTRIBUTE_VISIBILITY
-
 dnl
 dnl Automatically collect installed files
 dnl

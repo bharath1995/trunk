@@ -65,6 +65,7 @@
 #include <stdio.h>
 
 #include <sphinxbase/profile.h>
+#include <sphinxbase/pio.h>
 
 #include <s3types.h>
 #include <dag.h>

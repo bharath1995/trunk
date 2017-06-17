@@ -457,12 +457,7 @@ us a better architecture.
     { "-build_outdirs",                                         \
         ARG_BOOLEAN,                                            \
             "yes",                                              \
-            "Create parent directories for output files" },     \
-    { "-debug",                                                 \
-            ARG_INT32,                                          \
-            NULL,                                               \
-            "Verbosity level for debugging messages"            \
-     }
+            "Create parent directories for output files" }
 
 #define control_file_handling_command_line_macro() \
     { "-ctl", \

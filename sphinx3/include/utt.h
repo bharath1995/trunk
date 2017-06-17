@@ -37,6 +37,8 @@
 #ifndef _UTT_H_
 #define _UTT_H_
 
+#include <sphinxbase/bio.h>
+
 #include <s3types.h>
 #include "kb.h"
 #include "corpus.h"
