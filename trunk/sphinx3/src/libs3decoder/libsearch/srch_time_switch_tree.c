@@ -1033,7 +1033,7 @@ srch_TST_rescoring(void *srch, int32 frmno)
                  n_ltree) ? tstg->curugtree[i] : tstg->fillertree[i -
                                                                   tstg->
                                                                   n_lextree];
-            E_DEBUG(1,("Propagating words from lextree %d\n", i));
+            E_DEBUG("Propagating words from lextree %d\n", i);
             if (lextree_hmm_propagate_leaves
                 (lextree, kbcore, vh, frmno,
                  s->beam->word_thres) != LEXTREE_OPERATION_SUCCESS) {

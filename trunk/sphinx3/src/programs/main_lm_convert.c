@@ -138,7 +138,6 @@ main(int argc, char *argv[])
     const char *outputenc;
     const char *outputdir;
     char *outputpath;
-    int outputfnfree = FALSE;
     lm_t *lm;
     char separator[2];
     cmd_ln_t *config;
@@ -186,7 +185,6 @@ main(int argc, char *argv[])
       /* Length = strlen(inputfn) + 1 + strlen(outputfmt) + 5 (For safety) */
       outputfn = local_outputfn = (char *) ckd_calloc(strlen(inputfn) + strlen(outputfmt) + 5, sizeof(char));
       sprintf(local_outputfn, "%s.%s", inputfn, outputfmt);
-      outputfnfree = TRUE;
     }
 
     /* Outputpath = outputdir . "/" (or "\" in windows). outputfn; */
